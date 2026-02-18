@@ -1,0 +1,57 @@
+import { Request, Response } from "express";
+import type TipoPet from "./tipos/TipoPet";
+
+let listaDePets: Array<TipoPet> = []; // Array para armazenar os pets criados
+
+export default class PetController {
+    criaPet(req: Request, res: Response) {
+        const { id, nome, especie, idade, adotado } = <TipoPet>req.body;  // Type assertion para garantir que o corpo da requisição tem a estrutura de TipoPet
+
+        const novoPet: TipoPet = {
+            id,
+            nome,
+            especie,
+            idade,
+            adotado
+        };
+
+        listaDePets.push(novoPet);
+        return res.status(200).json(novoPet);
+    }
+
+    // código omitido
+
+    listaPets(req: Request, res: Response) {
+        return res.status(200).json(listaDePets);
+    }
+
+    atualizaPet(req: Request, res: Response) {
+        const { id } = req.params;
+        const { adotado, especie, idade, nome } = req.body as TipoPet;
+        const pet = listaDePets.find((pet) => pet.id === Number(id));
+        if (!pet) {
+            return res.status(404).json({ erro: "Pet não encontrado" });
+        }
+
+        pet.nome = nome;
+        pet.idade = idade;
+        pet.especie = especie;
+        pet.adotado = adotado;
+        return res.status(200).json(pet);
+    }
+
+// código omitido
+
+    deletaPet(req: Request, res: Response) {
+        const { id } = req.params;
+        const pet = listaDePets.find((pet) => pet.id === Number(id));
+        if (!pet) {
+            return res.status(404).json({ erro: "Pet não encontrado" });
+        }
+        const index = listaDePets.indexOf(pet);
+        listaDePets.splice(index, 1);
+        return res.status(200).json({ mensagem: "Pet deletado com sucesso" });
+    }
+
+
+}

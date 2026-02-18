@@ -29,7 +29,7 @@ export default class PetController {
         const { id } = req.params;
         const { adotado, especie, idade, nome } = req.body as TipoPet;
         const pet = listaDePets.find((pet) => pet.id === Number(id));
-        if (!pet) {
+        if (!pet) { // Se o pet não for encontrado, retorna um erro 404
             return res.status(404).json({ erro: "Pet não encontrado" });
         }
 
